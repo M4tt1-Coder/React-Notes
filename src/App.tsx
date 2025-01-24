@@ -10,39 +10,18 @@ import { Route, Routes } from "react-router-dom";
 import NoteList from "./components/NoteList";
 import CreateNote from "./components/CreateNote";
 
-// TODO - Main page
+// TODO - Main page / notes list
 // TODO - Notes dashboard
-// TODO - Create page / popover
-// TODO - Think of a database and backend -> deploy using Docker
+// TODO - Create page
 
 function App() {
+  // set the notes list with custom hook
+
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <NoteList
-            notes={[
-              {
-                id: "1232341234",
-                description: "This is an description",
-                title: "This is an title",
-                date: new Date(),
-              },
-              {
-                id: "124231423453",
-                description: "Full of surprises for further information",
-                title: "This is an title",
-                date: new Date(),
-              },
-            ]}
-          />
-        }
-      />
-      <Route
-        path="/create"
-        element={<CreateNote returnCreatedNote={(note) => {}} />}
-      />
+      <Route path="/" element={<NoteList />} />
+      <Route path="/create" element={<CreateNote />} />
+      <Route path="/dashboard/:id" element={<></>} />
     </Routes>
   );
 }

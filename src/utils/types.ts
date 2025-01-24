@@ -1,6 +1,13 @@
 import { z } from "zod";
 
 /**
+ * UUID string type validation for an note id.
+ *
+ * ZOD schema
+ */
+export const UUID_ZOD = z.string().uuid();
+
+/**
  * Represents the note data object for type validation.
  */
 export const NoteZOD = z.object({
@@ -12,7 +19,7 @@ export const NoteZOD = z.object({
       25,
       "Your note description to briefly! Please descrive your note more detailed!"
     )
-    .optional(),
+    .nullable(),
   date: z.date(),
 });
 

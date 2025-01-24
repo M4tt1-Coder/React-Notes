@@ -1,14 +1,16 @@
-import { useState } from "react";
-import { Note } from "../utils/types";
+import { useEffect, useState } from "react";
+// import { Note } from "../utils/types";
 import { filterNotesWithSearchString } from "../utils/searchHelper";
 import { redirect } from "react-router-dom";
+import { notesManager } from "../utils/noteHelper";
+import { Note } from "@prisma/client";
 
 // TODO - Design + Responsibility
 // TODO - Add logic
 
-interface Props {
-  notes: Note[];
-}
+// interface Props {
+// notes: Note[];
+// }
 
 /**
  *  Displays all notes that are currently in the list.
@@ -20,10 +22,23 @@ interface Props {
  * @param param0 - The list of notes.
  * @returns The compiled xlm code for the notes list page.
  */
-function NoteList({ notes }: Props) {
+function NoteList() {
+  const [notes, setNotes] = useState<Note[]>([]);
+  // get the notes
+  useEffect(() => {
+    async function fetchAllNotes() {
+      setNotes(await notesManager().getNotes());
+    }
+    fetchAllNotes();
+  });
+
   // reactive state declarato
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredNotes, setFilteredNotes] = useState(notes);
+
+  const onRedirectClick = (noteID: string) => (e) => {
+    redirect(`/dashboard/${noteID}`);
+  };
 
   return (
     <>
@@ -49,15 +64,15 @@ function NoteList({ notes }: Props) {
             </svg>
           </a>
         </button>
-        <div className="flex flex-col justify-between items-center w-1/2 h-3/4">
+        <div className="grid grid-cols-1 grid-rows-5 w-1/2 h-4/5 pb-2">
           {/* the heading */}
-          <div className="w-full h-fit">
+          <div className="w-full h-full row-span-1 flex items-center justify-center">
             <p className="text-center font-sans text-5xl font-bold transition-all duration-500 hover:tracking-wider hover:-translate-y-1">
               Notizen App
             </p>
           </div>
           {/* buttons + search bar */}
-          <div className="w-full flex items-center justify-around">
+          <div className="w-full flex items-center justify-around row-span-1">
             {/* create - button */}
             <button
               className="py-2 px-3 text-2xl font-medium ring-2 ring-black rounded-lg transition-all duration-500 hover:text-white hover:bg-black"
@@ -90,7 +105,7 @@ function NoteList({ notes }: Props) {
             </div>
           </div>
           {/* note list */}
-          <div className="flex flex-col items-center justify-center w-full">
+          <div className="row-span-3 flex flex-col items-center justify-start w-full">
             {notes.length === 0 ? (
               // when the notes list is empty, notify the user
               <p className="text-black font-mono font-semibold text-xl">
@@ -108,7 +123,11 @@ function NoteList({ notes }: Props) {
                     {note.date.toLocaleDateString()}
                   </p>
                   {/* link button to dashboard */}
-                  <button type="button" className="" onClick={() => {}}>
+                  <button
+                    type="button"
+                    className=""
+                    onClick={onRedirectClick(note.id)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
